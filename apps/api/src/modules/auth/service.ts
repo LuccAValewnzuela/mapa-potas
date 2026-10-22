@@ -1,15 +1,14 @@
 import { AppError } from "../../lib/errors";
 import { hashPassword, verifyPassword } from "../../lib/password";
-import type { AuthUserDto } from "./dto/auth-user.dto";
-import type { LoginDto } from "./dto/login.dto";
-import type { RegisterDto } from "./dto/register.dto";
+import type { LoginInput, RegisterInput } from "./models/credentials";
 import type { Session } from "./models/session";
+import type { User } from "./models/user";
 import { AuthRepository, UsernameTakenError } from "./repository";
 
 const SESSION_MS = 30 * 24 * 60 * 60 * 1000;
 
 export class AuthService {
-  static async register(input: RegisterDto) {
+  static async register(input: RegisterInput) {
     const existing = await AuthRepository.findUserByUsername(input.username);
     if (existing) throw new AppError(409, "username_taken", "Username already taken");
 
@@ -29,27 +28,27 @@ export class AuthService {
     }
 
     const session = await AuthService.openSession(user.id);
-    return { user: AuthService.toPublicUser(user), session };
+    return { user: AuthService.toUser(user), session };
   }
 
-  static async login(input: LoginDto) {
+  static async login(input: LoginInput) {
     const user = await AuthRepository.findUserByUsername(input.username);
     if (!user || !(await verifyPassword(user.passwordHash, input.password))) {
       throw new AppError(401, "invalid_credentials", "Invalid username or password");
     }
 
     const session = await AuthService.openSession(user.id);
-    return { user: AuthService.toPublicUser(user), session };
+    return { user: AuthService.toUser(user), session };
   }
 
-  private static toPublicUser(user: {
+  private static toUser(user: {
     id: string;
     username: string;
     displayName: string;
-    status: AuthUserDto["status"];
-    role: AuthUserDto["role"];
+    status: User["status"];
+    role: User["role"];
     createdAt: Date;
-  }): AuthUserDto {
+  }): User {
     return {
       id: user.id,
       username: user.username,

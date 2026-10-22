@@ -32,4 +32,21 @@ export class AuthRepository {
     const [session] = await db.insert(sessions).values({ userId, expiresAt }).returning();
     return session;
   }
+
+  static async findSessionUser(sessionId: string) {
+    const [row] = await db
+      .select({
+        expiresAt: sessions.expiresAt,
+        id: users.id,
+        username: users.username,
+        displayName: users.displayName,
+        status: users.status,
+        role: users.role,
+      })
+      .from(sessions)
+      .innerJoin(users, eq(sessions.userId, users.id))
+      .where(eq(sessions.id, sessionId))
+      .limit(1);
+    return row;
+  }
 }
