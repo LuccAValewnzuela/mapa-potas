@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { ZodError } from "zod";
 import { AppError } from "./lib/errors";
 import { authRoutes } from "./modules/auth/routes";
+import { statsRoutes } from "./modules/stats/routes";
 import { adminUserRoutes, userRoutes } from "./modules/users/routes";
 
 export const app = new Hono();
@@ -9,6 +10,7 @@ export const app = new Hono();
 app.route("/auth", authRoutes);
 app.route("/users", userRoutes);
 app.route("/admin/users", adminUserRoutes);
+app.route("/stats", statsRoutes);
 
 app.onError((err, c) => {
   if (err instanceof AppError) {
