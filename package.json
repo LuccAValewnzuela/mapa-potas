@@ -1,5 +1,13 @@
 {
   "name": "mapa-potas",
   "private": true,
-  "packageManager": "pnpm@12.11.2"
+  "packageManager": "pnpm@12.11.2",
+  "scripts": {
+    "dev": "pnpm --parallel --filter api --filter web run dev",
+    "dev:api": "pnpm --filter api dev",
+    "dev:web": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "typecheck": "pnpm --filter web typecheck",
+    "lint": "pnpm --filter web lint"
+  }
 }
