@@ -44,3 +44,12 @@ export const requireAdmin: MiddlewareHandler<AuthEnv> = async (c, next) => {
   c.set("user", user);
   await next();
 };
+
+export const requireActiveUser: MiddlewareHandler<AuthEnv> = async (c, next) => {
+  const user = await sessionUser(c);
+  if (user.status !== "active") {
+    throw new AppError(403, "forbidden", "Active users only");
+  }
+  c.set("user", user);
+  await next();
+};
