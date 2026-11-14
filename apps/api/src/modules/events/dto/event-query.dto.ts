@@ -26,6 +26,9 @@ export const eventQuerySchema = z
   })
   .refine((value) => !value.from || !value.to || value.from <= value.to, {
     message: "from must be before or equal to to",
+  })
+  .refine((value) => (value.from === undefined) === (value.to === undefined), {
+    message: "both from and to must be provided together",
   });
 
 export type EventQueryDto = z.infer<typeof eventQuerySchema>;

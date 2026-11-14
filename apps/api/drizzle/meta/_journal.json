@@ -15,6 +15,13 @@
       "when": 1794615674403,
       "tag": "0001_many_nebula",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794652265482,
+      "tag": "0002_smooth_lilandra",
+      "breakpoints": true
     }
   ]
 }

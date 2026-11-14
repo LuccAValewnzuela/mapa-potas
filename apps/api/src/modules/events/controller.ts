@@ -27,12 +27,12 @@ export class EventsController {
   static async createEvent(c: Context<AuthEnv>) {
     const dto = createEventSchema.parse(await c.req.json());
     const event = await EventsService.createEvent({
-      userId: c.get("user").id,
+      userId: dto.userId,
       latitude: dto.latitude,
       longitude: dto.longitude,
       occurredAt: dto.occurredAt,
       note: dto.note,
-    });
+    }, c.get("user"));
 
     return c.json(EventsController.toEventDto(event), 201);
   }

@@ -6,6 +6,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -48,7 +49,7 @@ export const events = pgTable(
   },
   (table) => [
     index("events_occurred_at_idx").on(table.occurredAt),
-    index("events_user_id_occurred_at_idx").on(table.userId, table.occurredAt),
+    unique("only_one_pota").on(table.userId, table.occurredAt),
   ],
 );
 

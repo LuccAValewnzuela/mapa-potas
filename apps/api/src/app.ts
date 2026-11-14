@@ -18,6 +18,12 @@ app.route("/comments", commentsRoutes);
 app.route("/photos", photoRoutes);
 app.route("/stats", statsRoutes);
 
+app.get("/health", (c) => c.json({ status: "ok" }));
+
+app.notFound((c) =>
+  c.json({ error: { code: "not_found", message: "Route not found" } }, 404),
+);
+
 app.onError((err, c) => {
   if (err instanceof AppError) {
     return c.json({ error: { code: err.code, message: err.message } }, err.status as 400);

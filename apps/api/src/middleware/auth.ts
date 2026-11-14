@@ -28,6 +28,7 @@ async function sessionUser(c: Context): Promise<SessionUser> {
     displayName: row.displayName,
     status: row.status,
     role: row.role,
+    createdAt: row.createdAt,
   };
 }
 

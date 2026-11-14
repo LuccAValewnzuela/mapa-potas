@@ -4,4 +4,5 @@ export type SessionUser = {
   displayName: string;
   status: "pending" | "active" | "rejected";
   role: "member" | "admin";
+  createdAt: Date;
 };

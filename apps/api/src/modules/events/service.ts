@@ -1,4 +1,4 @@
-import { AppError } from "../../lib/errors";
+import { AppError, isUniqueViolation } from "../../lib/errors";
 import { deleteFile } from "../../lib/storage";
 import type { SessionUser } from "../auth/models/session-user";
 import type { CreateCommentInput, CreateEventInput, UpdateEventInput } from "./models/event-input";
@@ -26,11 +26,19 @@ export class EventsService {
     return { ...event, comments, photoIds };
   }
 
-  static async createEvent(eventData: CreateEventInput) {
-    const result = await EventsRepository.createEvent(eventData);
-    if (!result) throw new AppError(500, "internal_error", "Could not create event");
+  static async createEvent(eventData: CreateEventInput, actor: SessionUser) {
+    if(actor.role !== "admin" && actor.id !== eventData.userId) {
+      throw new AppError(403, "forbidden", "You can only add your own events");
+    }
+    try {
+      const result = await EventsRepository.createEvent(eventData);
+      if (!result) throw new AppError(500, "internal_error", "Could not create event");
+      return EventsService.getEventById(result.id);
+    } catch(error) {
+      if(isUniqueViolation(error)) throw new AppError(409, "event_exists", "The same user already has a pota");
+      throw error;
+    }
 
-    return EventsService.getEventById(result.id);
   }
 
   static async updateEvent(eventId: string, actor: SessionUser, updatedEvent: UpdateEventInput) {

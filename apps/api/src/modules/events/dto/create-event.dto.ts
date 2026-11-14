@@ -10,6 +10,10 @@ export const createEventSchema = z.object({
     .max(500)
     .nullish()
     .transform((value) => value || null),
+  userId: z
+  .string()
+  .transform(value => value?.trim())
+  .pipe(z.uuid().max(100))
 });
 
 export type CreateEventDto = z.infer<typeof createEventSchema>;

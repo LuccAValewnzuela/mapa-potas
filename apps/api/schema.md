@@ -18,7 +18,7 @@ apps/api/src/
 Public reads: map, event, comments, photo bytes, ranking, active user list, public profile.
 POST   /auth/register
 POST   /auth/login
-POST   /auth/logout          requireUser
+POST   /auth/logout          idempotent, clears cookie
 GET    /auth/me              requireUser
 
 GET    /users                active only, for the filter chips
@@ -41,3 +41,4 @@ DELETE /photos/:id           requireActive, uploader
 
 GET    /stats/ranking
 GET    /stats/users/:username
+GET    /health

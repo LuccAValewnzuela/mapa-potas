@@ -42,11 +42,16 @@ export class AuthRepository {
         displayName: users.displayName,
         status: users.status,
         role: users.role,
+        createdAt: users.createdAt,
       })
       .from(sessions)
       .innerJoin(users, eq(sessions.userId, users.id))
       .where(eq(sessions.id, sessionId))
       .limit(1);
     return row;
+  }
+
+  static async deleteSession(sessionId: string) {
+    await db.delete(sessions).where(eq(sessions.id, sessionId));
   }
 }

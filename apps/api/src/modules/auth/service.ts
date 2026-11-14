@@ -41,6 +41,10 @@ export class AuthService {
     return { user: AuthService.toUser(user), session };
   }
 
+  static async logout(sessionId: string) {
+    await AuthRepository.deleteSession(sessionId);
+  }
+
   private static toUser(user: {
     id: string;
     username: string;
