@@ -1,4 +1,5 @@
 import { AppError } from "../../lib/errors";
+import { deleteFile } from "../../lib/storage";
 import type { SessionUser } from "../auth/models/session-user";
 import type { CreateCommentInput, CreateEventInput, UpdateEventInput } from "./models/event-input";
 import type { EventQuery } from "./models/event-query";
@@ -50,8 +51,16 @@ export class EventsService {
       throw new AppError(403, "forbidden", "You can only delete your own events");
     }
 
+    const storageKeys = await EventsRepository.getPhotoStorageKeysByEventId(eventId);
     const deleted = await EventsRepository.deleteEvent(eventId);
     if (!deleted) throw new AppError(404, "event_not_found", "Event not found");
+
+    const results = await Promise.allSettled(storageKeys.map((storageKey) => deleteFile(storageKey)));
+    for (const result of results) {
+      if (result.status === "rejected") {
+        console.error("Failed to delete event photo file", result.reason);
+      }
+    }
   }
 
   static async createComment(commentData: CreateCommentInput) {

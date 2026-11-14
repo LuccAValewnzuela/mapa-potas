@@ -121,4 +121,13 @@ export class EventsRepository {
 
     return rows.map((row) => row.id);
   }
+
+  static async getPhotoStorageKeysByEventId(eventId: string) {
+    const rows = await db
+      .select({ storageKey: photos.storageKey })
+      .from(photos)
+      .where(eq(photos.eventId, eventId));
+
+    return rows.map((row) => row.storageKey);
+  }
 }

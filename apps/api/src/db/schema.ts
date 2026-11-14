@@ -61,6 +61,7 @@ export const photos = pgTable("photos", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   storageKey: text("storage_key").notNull(),
+  mimeType: text("mime_type").notNull().default("application/octet-stream"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

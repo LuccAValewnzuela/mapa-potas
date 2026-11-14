@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 import { AppError } from "./lib/errors";
 import { authRoutes } from "./modules/auth/routes";
 import { commentsRoutes, eventsRoutes } from "./modules/events/routes";
+import { eventPhotoRoutes, photoRoutes } from "./modules/photos/routes";
 import { statsRoutes } from "./modules/stats/routes";
 import { adminUserRoutes, userRoutes } from "./modules/users/routes";
 
@@ -12,7 +13,9 @@ app.route("/auth", authRoutes);
 app.route("/users", userRoutes);
 app.route("/admin/users", adminUserRoutes);
 app.route("/events", eventsRoutes);
+app.route("/events", eventPhotoRoutes);
 app.route("/comments", commentsRoutes);
+app.route("/photos", photoRoutes);
 app.route("/stats", statsRoutes);
 
 app.onError((err, c) => {

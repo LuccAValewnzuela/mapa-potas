@@ -1,0 +1,1 @@
+ALTER TABLE "photos" ADD COLUMN "mime_type" text DEFAULT 'application/octet-stream' NOT NULL;
