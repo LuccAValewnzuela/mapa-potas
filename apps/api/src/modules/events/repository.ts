@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, gte, inArray, lte } from "drizzle-orm";
 import { db } from "../../db";
-import { comments, events, photos, users } from "../../db/schema";
+import { comments, events, photos, places, users } from "../../db/schema";
 import type { CreateCommentInput, CreateEventInput, UpdateEventInput } from "./models/event-input";
 import type { EventQuery } from "./models/event-query";
 
@@ -24,6 +24,7 @@ export class EventsRepository {
         username: users.username,
         displayName: users.displayName,
         avatarKey: users.avatarKey,
+        place: places,
         latitude: events.latitude,
         longitude: events.longitude,
         occurredAt: events.occurredAt,
@@ -32,6 +33,7 @@ export class EventsRepository {
       })
       .from(events)
       .innerJoin(users, eq(users.id, events.userId))
+      .leftJoin(places, eq(places.id, events.placeId))
       .where(
         and(
           eq(users.status, "active"),

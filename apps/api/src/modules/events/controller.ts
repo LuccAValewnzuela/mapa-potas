@@ -28,6 +28,7 @@ export class EventsController {
     const dto = createEventSchema.parse(await c.req.json());
     const event = await EventsService.createEvent({
       userId: dto.userId,
+      placeId: dto.placeId,
       latitude: dto.latitude,
       longitude: dto.longitude,
       occurredAt: dto.occurredAt,
@@ -78,6 +79,7 @@ export class EventsController {
       username: event.username,
       displayName: event.displayName,
       avatarKey: event.avatarKey,
+      place: event.place,
       latitude: event.latitude,
       longitude: event.longitude,
       occurredAt: event.occurredAt,

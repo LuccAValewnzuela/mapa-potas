@@ -11,6 +11,7 @@ apps/api/src/
     users/
     events/     comments live here
     photos/
+    places/
     stats/
 
 ## Routes
@@ -38,6 +39,9 @@ DELETE /comments/:id         requireActive, author
 POST   /events/:id/photos    requireActive
 GET    /photos/:id           file bytes
 DELETE /photos/:id           requireActive, uploader
+
+GET    /places/nearby        ?lat&lng&radius=75
+POST   /places               requireActive
 
 GET    /stats/ranking
 GET    /stats/users/:username

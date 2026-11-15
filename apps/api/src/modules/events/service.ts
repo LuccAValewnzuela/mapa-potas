@@ -1,6 +1,7 @@
 import { AppError, isUniqueViolation } from "../../lib/errors";
 import { deleteFile } from "../../lib/storage";
 import type { SessionUser } from "../auth/models/session-user";
+import { PlacesService } from "../places/service";
 import type { CreateCommentInput, CreateEventInput, UpdateEventInput } from "./models/event-input";
 import type { EventQuery } from "./models/event-query";
 import { EventsRepository } from "./repository";
@@ -30,6 +31,9 @@ export class EventsService {
     if(actor.role !== "admin" && actor.id !== eventData.userId) {
       throw new AppError(403, "forbidden", "You can only add your own events");
     }
+    if (eventData.placeId) {
+      await PlacesService.getPlaceById(eventData.placeId);
+    }
     try {
       const result = await EventsRepository.createEvent(eventData);
       if (!result) throw new AppError(500, "internal_error", "Could not create event");
@@ -45,6 +49,9 @@ export class EventsService {
     const event = await EventsService.getEventById(eventId);
     if (event.userId !== actor.id) {
       throw new AppError(403, "forbidden", "You can only edit your own events");
+    }
+    if (updatedEvent.placeId) {
+      await PlacesService.getPlaceById(updatedEvent.placeId);
     }
 
     const updated = await EventsRepository.updateEvent(eventId, updatedEvent);

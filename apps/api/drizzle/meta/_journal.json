@@ -22,6 +22,13 @@
       "when": 1794652265482,
       "tag": "0002_smooth_lilandra",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794727054359,
+      "tag": "0003_brainy_emma_frost",
+      "breakpoints": true
     }
   ]
 }

@@ -15,6 +15,7 @@ export const updateEventSchema = z
       .nullable()
       .optional()
       .transform((value) => (value === "" ? null : value)),
+    placeId: z.uuid().nullable().optional(),
   })
   .refine((value) => Object.keys(value).length > 0, {
     message: "At least one field is required",

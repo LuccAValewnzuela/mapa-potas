@@ -1,5 +1,6 @@
 export type CreateEventInput = {
   userId: string;
+  placeId?: string | null;
   latitude: number;
   longitude: number;
   occurredAt: Date;
@@ -11,6 +12,7 @@ export type UpdateEventInput = {
   longitude?: number;
   occurredAt?: Date;
   note?: string | null;
+  placeId?: string | null;
 };
 
 export type CreateCommentInput = {

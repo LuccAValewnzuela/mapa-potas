@@ -15,7 +15,7 @@ type MapNoticeProps = {
 
 function MapNotice({ children, icon, role, action} : MapNoticeProps) {
     return (
-        <div className="pointer-events-none absolute insert-0 z-[500] flex items-center justify-center p-4">
+        <div className="pointer-events-none absolute inset-0 z-[500] flex items-center justify-center p-4">
             <div
                 role={role}
                 className="pointer-events-auto flex items-center gap-3 rounded-lg border bg-background/95 px-4 py-3 text-sm shadow-lg backdrop-blur">

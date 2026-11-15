@@ -167,7 +167,8 @@ Requires an active user.
   "latitude": -34.6037,
   "longitude": -58.3816,
   "occurredAt": "2026-11-13T10:00:00Z",
-  "note": "Optional note"
+  "note": "Optional note",
+  "placeId": "optional-place-uuid"
 }
 ```
 
@@ -175,6 +176,7 @@ Requires an active user.
 - `longitude`: -180 to 180.
 - `occurredAt`: ISO date-time with an explicit offset.
 - `note`: optional, maximum 500 characters.
+- `placeId`: optional UUID of an existing `Place`. Returns `404` with code `place_not_found` if it does not exist.
 
 Returns `201` with `Event`.
 
@@ -184,7 +186,7 @@ Returns `201` with `Event`.
 PATCH /events/:id
 ```
 
-Requires an active user and event ownership. Accepts any subset of `latitude`, `longitude`, `occurredAt`, and `note`. An empty note is stored as `null`. Returns `Event`.
+Requires an active user and event ownership. Accepts any subset of `latitude`, `longitude`, `occurredAt`, `note`, and `placeId`. An empty note is stored as `null`. A `null` `placeId` detaches the event from its place. Returns `Event`.
 
 ### Delete event
 
@@ -193,6 +195,43 @@ DELETE /events/:id
 ```
 
 Requires an active user and event ownership. Deletes comments and photo records via cascading foreign keys, removes photo files from disk, and returns `204`.
+
+## Places
+
+Places are shared globally: one place row represents a venue for all users. Events reference a place optionally; deleting a place keeps the events and clears their `placeId`.
+
+### Nearby places
+
+```http
+GET /places/nearby?lat=-34.6037&lng=-58.3816&radius=75
+```
+
+- `lat` / `lng`: required coordinates.
+- `radius`: optional, in meters, 1-1000, defaults to `75`.
+
+Returns `NearbyPlace[]`: places within the radius sorted by distance ascending, each with an extra `distanceMeters` field.
+
+### Create place
+
+```http
+POST /places
+```
+
+Requires an active user.
+
+```json
+{
+  "name": "Bar El Ejemplo",
+  "latitude": -34.6037,
+  "longitude": -58.3816
+}
+```
+
+- `name`: 1-100 characters after trimming.
+- `latitude`: -90 to 90.
+- `longitude`: -180 to 180.
+
+Returns `201` with `Place`.
 
 ## Comments
 
@@ -334,11 +373,33 @@ Returns `200`:
   username: string;
   displayName: string;
   avatarKey: string | null;
+  place: Place | null;
   latitude: number;
   longitude: number;
   occurredAt: string;
   note: string | null;
   createdAt: string;
+}
+```
+
+### Place
+
+```ts
+{
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  createdBy: string | null;
+  createdAt: string;
+}
+```
+
+### NearbyPlace
+
+```ts
+Place & {
+  distanceMeters: number;
 }
 ```
 

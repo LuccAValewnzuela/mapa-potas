@@ -34,6 +34,15 @@ export const sessions = pgTable("sessions", {
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
 });
 
+export const places = pgTable("places", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  latitude: doublePrecision("latitude").notNull(),
+  longitude: doublePrecision("longitude").notNull(),
+  createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const events = pgTable(
   "events",
   {
@@ -41,6 +50,7 @@ export const events = pgTable(
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
+    placeId: uuid("place_id").references(() => places.id, { onDelete: "set null" }),
     latitude: doublePrecision("latitude").notNull(),
     longitude: doublePrecision("longitude").notNull(),
     occurredAt: timestamp("occurred_at", { withTimezone: true }).notNull(),
@@ -49,6 +59,7 @@ export const events = pgTable(
   },
   (table) => [
     index("events_occurred_at_idx").on(table.occurredAt),
+    index("events_place_id_idx").on(table.placeId),
     unique("only_one_pota").on(table.userId, table.occurredAt),
   ],
 );

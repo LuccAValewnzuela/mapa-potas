@@ -4,6 +4,7 @@ import { AppError } from "./lib/errors";
 import { authRoutes } from "./modules/auth/routes";
 import { commentsRoutes, eventsRoutes } from "./modules/events/routes";
 import { eventPhotoRoutes, photoRoutes } from "./modules/photos/routes";
+import { placesRoutes } from "./modules/places/routes";
 import { statsRoutes } from "./modules/stats/routes";
 import { adminUserRoutes, userRoutes } from "./modules/users/routes";
 
@@ -16,6 +17,7 @@ app.route("/events", eventsRoutes);
 app.route("/events", eventPhotoRoutes);
 app.route("/comments", commentsRoutes);
 app.route("/photos", photoRoutes);
+app.route("/places", placesRoutes);
 app.route("/stats", statsRoutes);
 
 app.get("/health", (c) => c.json({ status: "ok" }));

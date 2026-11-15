@@ -13,7 +13,8 @@ export const createEventSchema = z.object({
   userId: z
   .string()
   .transform(value => value?.trim())
-  .pipe(z.uuid().max(100))
+  .pipe(z.uuid().max(100)),
+  placeId: z.uuid().nullish()
 });
 
 export type CreateEventDto = z.infer<typeof createEventSchema>;
