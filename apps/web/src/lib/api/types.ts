@@ -23,12 +23,22 @@ export type User = {
   reviewedBy: string | null;
 };
 
+export type Place = {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  createdBy: string | null;
+  createdAt: string;
+}
+
 export type Event = {
   id: string;
   userId: string;
   username: string;
   displayName: string;
   avatarKey: string | null;
+  place: Place | null;
   latitude: number;
   longitude: number;
   occurredAt: string;

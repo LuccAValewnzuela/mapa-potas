@@ -1,35 +1,35 @@
 import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, OSM_ATTRIBUTION, OSM_TITLE_URL, setupLeafletIcons } from "@/lib/map-config";
 import { latLngBounds } from "leaflet";
 import { useEffect } from "react";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 import type { Event } from "@/lib/api";
+import type { PlaceGroup } from "./group-events";
+
+type EventsMapProps = {
+    groups: PlaceGroup[];
+    orphans: Event[];
+    onSelectPlace: (group: PlaceGroup) => void;
+    onSelectEvent: (event: Event) => void;
+};
 
 setupLeafletIcons();
 
-function FitToEvents({ events }: { events: Event[] }) {
+function FitToEvents({ groups, orphans }: { groups: PlaceGroup[]; orphans: Event[] }) {
     const map = useMap();
     useEffect(() => {
-        if (events.length === 0) return;
-        const bounds = latLngBounds(
-            events.map(
-                (event) => [event.latitude, event.longitude] as [number, number],
-            )
-        );
+        const points: [number, number][] = [
+            ...groups.map((group) => [group.place.latitude, group.place.longitude] as [number, number]),
+            ...orphans.map((event) => [event.latitude, event.longitude] as [number, number]),
+        ];
 
-        map.fitBounds(bounds, { padding: [48, 48], maxZoom: 14 });
-    }, [events, map]);
+        if(points.length === 0) return;
+        map.fitBounds(latLngBounds(points), { padding: [48, 48], maxZoom: 14 });
+    }, [groups, orphans, map]);
 
     return null;
 }
 
-function formatEventDate(value: string) {
-    return new Intl.DateTimeFormat(undefined, {
-        dateStyle: "medium",
-        timeStyle: "short",
-    }).format(new Date(value));
-}
-
-export function EventsMap({ events }: { events: Event[] }) {
+export function EventsMap({ groups, orphans, onSelectPlace, onSelectEvent }: EventsMapProps) {
     return (
         <MapContainer
             center={DEFAULT_MAP_CENTER}
@@ -38,24 +38,21 @@ export function EventsMap({ events }: { events: Event[] }) {
             className="h-full w-full"
         >
             <TileLayer attribution={OSM_ATTRIBUTION} url={OSM_TITLE_URL} />
-            <FitToEvents events={events} />
+            <FitToEvents groups={groups} orphans={orphans} />
 
-            {events.map((event) =>(
+            {groups.map(group => (
+                <Marker
+                    key={group.place.id}
+                    position={[group.place.latitude, group.place.longitude]}
+                    eventHandlers={{ click: () => onSelectPlace(group)}} />
+            ))}
+            {orphans.map(event => (
                 <Marker
                     key={event.id}
                     position={[event.latitude, event.longitude]}
-                >
-                    <Popup>
-                        <div className="space-y-1">
-                            <p className="text-sm font-semibold">{event.displayName}</p>
-                            <p className="text-xs text-muted-foreground">{formatEventDate(event.occurredAt)}</p>
-                            {event.note ? (
-                                <p className="max-w-64 text-sm">{event.note}</p>
-                            ) : null}
-                        </div>
-                    </Popup>
-                </Marker>
+                    eventHandlers={{ click: () => onSelectEvent(event)}} />
             ))}
+            
         </MapContainer>
     );
 }
