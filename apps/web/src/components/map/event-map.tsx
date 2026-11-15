@@ -1,13 +1,24 @@
-import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, OSM_ATTRIBUTION, OSM_TITLE_URL, setupLeafletIcons } from "@/lib/map-config";
+import {
+    DEFAULT_MAP_CENTER,
+    DEFAULT_MAP_ZOOM,
+    DRAFT_MARKER_ICON,
+    OSM_ATTRIBUTION,
+    OSM_TITLE_URL,
+    setupLeafletIcons,
+    type MapPoint,
+} from "@/lib/map-config";
 import { latLngBounds } from "leaflet";
 import { useEffect } from "react";
 import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 import type { Event } from "@/lib/api";
 import type { PlaceGroup } from "./group-events";
+import { MapClickHandler } from "./map-click-handler";
 
 type EventsMapProps = {
     groups: PlaceGroup[];
     orphans: Event[];
+    draftPoint: MapPoint | null;
+    onMapClick: (point: MapPoint) => void;
     onSelectPlace: (group: PlaceGroup) => void;
     onSelectEvent: (event: Event) => void;
 };
@@ -29,7 +40,7 @@ function FitToEvents({ groups, orphans }: { groups: PlaceGroup[]; orphans: Event
     return null;
 }
 
-export function EventsMap({ groups, orphans, onSelectPlace, onSelectEvent }: EventsMapProps) {
+export function EventsMap({ groups, orphans, draftPoint, onMapClick, onSelectPlace, onSelectEvent }: EventsMapProps) {
     return (
         <MapContainer
             center={DEFAULT_MAP_CENTER}
@@ -39,6 +50,15 @@ export function EventsMap({ groups, orphans, onSelectPlace, onSelectEvent }: Eve
         >
             <TileLayer attribution={OSM_ATTRIBUTION} url={OSM_TITLE_URL} />
             <FitToEvents groups={groups} orphans={orphans} />
+            <MapClickHandler onClick={onMapClick} />
+
+            {draftPoint ? (
+                <Marker
+                    position={[draftPoint.lat, draftPoint.lng]}
+                    icon={DRAFT_MARKER_ICON}
+                    interactive={false}
+                />
+            ) : null}
 
             {groups.map(group => (
                 <Marker

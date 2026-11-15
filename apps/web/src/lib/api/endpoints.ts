@@ -5,11 +5,13 @@ import type {
   Comment,
   CreateCommentInput,
   CreateEventInput,
+  CreatePlaceInput,
   Event,
   EventDetail,
   EventQuery,
   LoginInput,
   Photo,
+  Place,
   RegisterInput,
   UpdateEventInput,
   User,
@@ -56,6 +58,10 @@ export const eventsApi = {
     ),
   deleteComment: (id: string) =>
     api.delete(`/comments/${encodeURIComponent(id)}`),
+};
+
+export const placesApi = {
+  create: (input: CreatePlaceInput) => api.post<Place>("/places", input),
 };
 
 export const photosApi = {

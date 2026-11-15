@@ -99,10 +99,17 @@ export type EventQuery = {
 
 export type CreateEventInput = {
   userId: string;
+  placeId?: string | null;
   latitude: number;
   longitude: number;
   occurredAt: string;
   note?: string | null;
+};
+
+export type CreatePlaceInput = {
+  name: string;
+  latitude: number;
+  longitude: number;
 };
 
 export type UpdateEventInput = {

@@ -1,6 +1,7 @@
-import { ChevronRightIcon } from "lucide-react";
-import type { Event } from "@/lib/api";
+import { ChevronRightIcon, PlusIcon } from "lucide-react";
+import type { Event, Place } from "@/lib/api";
 import { formatEventDate } from "@/lib/utils";
+import { Button } from "../ui/button";
 import { UserAvatar } from "../user-avatar";
 import type { PlaceGroup } from "./group-events";
 import { PanelShell } from "./panel-shell";
@@ -9,9 +10,10 @@ type PlacePanelProps = {
     group: PlaceGroup;
     onClose: () => void;
     onSelectEvent: (event: Event) => void;
+    onCreatePota: (place: Place) => void;
 };
 
-export function PlacePanel({ group, onClose, onSelectEvent }: PlacePanelProps) {
+export function PlacePanel({ group, onClose, onSelectEvent, onCreatePota }: PlacePanelProps) {
     const people = new Set(group.events.map((event) => event.userId)).size;
 
     return (
@@ -20,6 +22,16 @@ export function PlacePanel({ group, onClose, onSelectEvent }: PlacePanelProps) {
             subtitle={`${group.events.length} ${group.events.length === 1 ? "pota" : "potas"} · ${people} ${people === 1 ? "person" : "people"}`}
             onClose={onClose}
         >
+            <Button
+                type="button"
+                size="sm"
+                className="mb-3 w-full"
+                onClick={() => onCreatePota(group.place)}
+            >
+                <PlusIcon />
+                New pota
+            </Button>
+
             <ul className="flex flex-col gap-1">
                 {group.events.map((event) => (
                     <li key={event.id}>

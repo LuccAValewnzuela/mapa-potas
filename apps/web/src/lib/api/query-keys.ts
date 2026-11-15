@@ -16,6 +16,9 @@ export const queryKeys = {
   comments: {
     all: ["comments"] as const,
   },
+  places: {
+    all: ["places"] as const,
+  },
   photos: {
     all: ["photos"] as const,
   },
